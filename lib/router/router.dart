@@ -1,5 +1,5 @@
 import 'package:go_router/go_router.dart';
-import 'package:movie_app/presentation/movie/movie_list_screen.dart';
+import 'package:movie_app/presentation/bottom_navigation/bottom_navigation_screen.dart';
 import 'package:movie_app/presentation/splash/splash_screen.dart';
 
 final router = GoRouter(initialLocation: '/splash', routes: [
@@ -9,8 +9,8 @@ final router = GoRouter(initialLocation: '/splash', routes: [
         return const SplashScreen();
       }),
   GoRoute(
-      path: '/movie_list',
+      path: '/bottom_navigation',
       builder: (context, state) {
-        return const MovieListScreen();
-      })
+        return const BottomNavigationScreen();
+      }),
 ]);
