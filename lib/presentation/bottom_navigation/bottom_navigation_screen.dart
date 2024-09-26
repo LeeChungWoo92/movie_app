@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:movie_app/presentation/movie/movie_list_screen.dart';
 
 import '../favorite/favorite_screen.dart';
+import '../movie/movie_list_screen_root.dart';
 
 class BottomNavigationScreen extends StatefulWidget {
   const BottomNavigationScreen({super.key});
@@ -31,7 +31,7 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
 
   // 각 화면에 해당하는 위젯 리스트
   final List<Widget> _children = [
-    const MovieListScreen(),
+    const MovieListScreenRoot(),
     const FavoriteScreen(),
   ];
 
@@ -49,7 +49,7 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
         bottomNavigationBar: BottomNavigationBar(
           onTap: onTabTapped, // 탭 선택시 호출
           currentIndex: _currentIndex, // 현재 선택된 탭 인덱스
-          items:  [
+          items: [
             BottomNavigationBarItem(
               icon: _movieIcon(0),
               label: '영화',
