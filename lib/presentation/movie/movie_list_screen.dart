@@ -4,15 +4,50 @@ import 'package:movie_app/presentation/movie/movie_list_ui_state.dart';
 import 'package:movie_app/presentation/movie/movie_list_view_model.dart';
 import 'package:provider/provider.dart';
 
-class MovieListScreen extends StatelessWidget {
+class MovieListScreen extends StatefulWidget {
   const MovieListScreen({
     super.key,
   });
 
   @override
+  State<MovieListScreen> createState() => _MovieListScreenState();
+}
+
+class _MovieListScreenState extends State<MovieListScreen> {
+  late ScrollController _scrollController;
+  late MovieListViewModel viewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_scrollListener);
+
+    // viewModel 초기화 및 초기 데이터 로드
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      viewModel = context.read<MovieListViewModel>();
+      viewModel.fetchMovies();
+    });
+  }
+
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollListener() {
+    final viewModel = context.read<MovieListViewModel>();
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent &&
+        !viewModel.state.isLoading) {
+      viewModel.fetchMovies();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<MovieListViewModel>();
-    final state = viewModel.state;
+    final state = context.watch<MovieListViewModel>().state;
 
     return Scaffold(
         backgroundColor: Colors.black,
@@ -29,7 +64,7 @@ class MovieListScreen extends StatelessWidget {
               ),
             ),
             Text(
-              '${state.movieData!.dates!.minimum.toString()} ~ ${state.movieData!.dates!.maximum.toString()}',
+              '${state.movieData?.dates?.minimum ?? ''} ~ ${state.movieData?.dates?.maximum ?? ''}',
               style: const TextStyle(
                 color: Colors.white,
               ),
@@ -48,18 +83,21 @@ class MovieListScreen extends StatelessWidget {
     final movies = state.movie;
 
     return GridView.builder(
-      shrinkWrap: true,
-      itemCount: movies.length,
+      controller: _scrollController,
+      itemCount: movies.length + (state.isLoading ? 1 : 0),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+      ),
       itemBuilder: (context, index) {
-        final movie = movies[index];
-        if (state.isLoading) {
-          const Center(
+        if (index == movies.length && state.isLoading) {
+          return const Center(
             child: CircularProgressIndicator(),
           );
         }
+
+        final movie = movies[index];
         return MovieCardWidget(movie: movie);
       },
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
     );
   }
 }

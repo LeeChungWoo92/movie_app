@@ -1,6 +1,6 @@
 import 'package:movie_app/data/datasource/movie_data_source.dart';
 import 'package:movie_app/data/dto/movie_dto.dart';
-import 'package:movie_app/domain/repository/moive_repository.dart';
+import 'package:movie_app/domain/repository/movie_repository.dart';
 import 'package:movie_app/data/mapper/movie_mapper.dart';
 import '../../domain/model/movie.dart';
 
@@ -10,9 +10,9 @@ class MovieRepositoryImpl implements MovieRepository {
   MovieRepositoryImpl(this._movieDataSource);
 
   @override
-  Future<List<Movie>> getMovies() async {
+  Future<List<Movie>> getMovies(int page) async {
     try {
-      final movie = await fetch();
+      final movie = await fetch(page);
       return movie.results!.map((e) => e.toMovie()).toList();
     } catch (e) {
       return throw Exception('');
@@ -20,9 +20,9 @@ class MovieRepositoryImpl implements MovieRepository {
   }
 
   @override
-  Future<MovieDto> fetch() async {
+  Future<MovieDto> fetch(int page) async {
     try {
-      final response = await _movieDataSource.fetch();
+      final response = await _movieDataSource.fetch(page);
       return response;
     } catch (e) {
       throw UnimplementedError();

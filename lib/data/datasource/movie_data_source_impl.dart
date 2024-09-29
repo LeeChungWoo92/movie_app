@@ -7,15 +7,14 @@ import '../dto/movie_dto.dart';
 class MovieDataSourceImpl implements MovieDataSource {
   final String _baseUrl = "https://api.themoviedb.org/3/movie/now_playing";
   final String _language = "ko-KR";
-  final int _page = 1;
 
-  Uri _buildUrl() {
-    return Uri.parse("$_baseUrl?language=$_language&page=$_page");
+  Uri _buildUrl(int page) {
+    return Uri.parse("$_baseUrl?language=$_language&page=$page");
   }
 
   Map<String, String> _buildHeaders() {
     final String? apiKey = dotenv.env['API_KEY_MOVIE'];
-    if (apiKey == null) {
+    if (apiKey == null || apiKey.isEmpty) {
       throw Exception('API Key is missing');
     }
     return {
@@ -25,12 +24,13 @@ class MovieDataSourceImpl implements MovieDataSource {
   }
 
   @override
-  Future<MovieDto> fetch() async {
+  Future<MovieDto> fetch(int page) async {
     try {
-      final response = await http.get(_buildUrl(), headers: _buildHeaders());
+      final response = await http.get(_buildUrl(page), headers: _buildHeaders());
 
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
+        print(jsonResponse);
         return MovieDto.fromJson(jsonResponse);
       } else {
         throw Exception('Failed to load movies, status code: ${response.statusCode}');
