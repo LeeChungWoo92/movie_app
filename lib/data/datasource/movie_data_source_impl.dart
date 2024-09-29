@@ -25,13 +25,13 @@ class MovieDataSourceImpl implements MovieDataSource {
   }
 
   @override
-  Future<List<MovieDataDto>> getMovies() async {
+  Future<MovieDto> fetch() async {
     try {
       final response = await http.get(_buildUrl(), headers: _buildHeaders());
 
       if (response.statusCode == 200) {
-        final List<dynamic> jsonResponse = jsonDecode(response.body)['results'];
-        return jsonResponse.map((e) => MovieDataDto.fromJson(e)).toList();
+        final jsonResponse = jsonDecode(response.body);
+        return MovieDto.fromJson(jsonResponse);
       } else {
         throw Exception('Failed to load movies, status code: ${response.statusCode}');
       }
