@@ -25,6 +25,7 @@ class MovieCardWidget extends StatelessWidget {
                 )),
             Text(
               movie.title,
+              maxLines: 1,
               style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
