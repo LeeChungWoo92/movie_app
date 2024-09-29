@@ -38,8 +38,18 @@ class MovieCardWidget extends StatelessWidget {
                   color: Colors.yellow,
                   size: 18,
                 ),
-                Text(movie.voteAverage.toStringAsFixed(1)),
-                Text('(${movie.voteCount.toString()})'),
+                Text(
+                  movie.voteAverage.toStringAsFixed(1),
+                  style: const TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                Text(
+                  '(${movie.voteCount.toString()})',
+                  style: const TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
               ],
             ),
           ],
